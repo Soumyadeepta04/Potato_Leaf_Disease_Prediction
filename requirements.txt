@@ -3,3 +3,9 @@ keras
 opencv_python_headless
 ipykernel
 matplotlib
+numpy
+pickle-mixin
+stramlit
+seaborn
+pandas
+scikit-learn
