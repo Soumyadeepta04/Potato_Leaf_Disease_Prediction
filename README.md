@@ -48,9 +48,5 @@ python potato_leaf_detection/web.py
 - Deploy the application on cloud platforms (AWS/GCP)
 - Add more plant disease classifications
 
-## 📜 License
-This project is licensed under the **MIT License**.
 
----
-🚀 **Happy Coding!** 😊
 
