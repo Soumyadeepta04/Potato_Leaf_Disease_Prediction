@@ -3,45 +3,63 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 
-# Function to load model and predict
-def model_prediction(test_image):
-    model = tf.keras.models.load_model("trained_plant_disease_model.keras")
-    image = tf.keras.preprocessing.image.load_img(test_image, target_size=(128, 128))
-    input_arr = tf.keras.preprocessing.image.img_to_array(image)
-    input_arr = np.array([input_arr])  # Convert to array
-    predictions = model.predict(input_arr)
-    return np.argmax(predictions)
+# Load model once and cache it to optimize performance
+@st.cache_resource
+def load_model():
+    try:
+        model = tf.keras.models.load_model("trained_plant_disease_model.keras")
+        return model
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        return None
+
+model = load_model()
+
+# Function to preprocess and predict image
+def model_prediction(image_file):
+    try:
+        image = Image.open(image_file).convert('RGB')  # Convert image to RGB
+        image = image.resize((128, 128))  # Resize to match model input size
+        input_arr = np.array(image) / 255.0  # Normalize pixel values
+        input_arr = np.expand_dims(input_arr, axis=0)  # Add batch dimension
+
+        predictions = model.predict(input_arr)
+        return np.argmax(predictions)
+    except Exception as e:
+        st.error(f"Prediction Error: {e}")
+        return None
 
 # Sidebar
-st.sidebar.title("Plant Disease System for Sustainable Agriculture")
+st.sidebar.title("Plant Disease Detection System")
 app_mode = st.sidebar.selectbox('Select Page', ['Home', 'Disease Recognition'])
 
-# Banner Image (Ensuring uniform width)
-img = Image.open('leafimg.jpg')
-st.image(img, use_column_width=True)  # Fixed width issue
+# Banner Image
+st.image("leafimg.jpg", use_column_width=True)
 
 # Home Page
 if app_mode == 'Home':
-    st.markdown("<h1 style='text-align: center;'>Potato Leaf Disease Detection System for Sustainable Agriculture</h1>", 
-                unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Potato Leaf Disease Detection</h1>", unsafe_allow_html=True)
 
 # Disease Recognition Page
 elif app_mode == 'Disease Recognition':
-    st.header('Plant Disease Detection System for Sustainable Agriculture')
+    st.header('Upload a Potato Leaf Image')
 
-# File Uploader
-test_image = st.file_uploader('Choose an Image: ')
+    # File Uploader
+    test_image = st.file_uploader("Choose an Image...", type=["jpg", "jpeg", "png"])
 
-if test_image:  # Only show image if uploaded
-    st.image(test_image, use_column_width=True)
+    if test_image:
+        st.image(test_image, caption="Uploaded Image", use_column_width=True)
 
-# Prediction Button
-if st.button('Predict'):
-    if test_image:  # Ensure an image is uploaded before predicting
-        st.snow()
-        st.write('Our Prediction:')
-        result_index = model_prediction(test_image)
-        class_name = ['Potato__Early_blight', 'Potato__Late_blight', 'Potato__healthy']
-        st.success(f'Model predicts: {class_name[result_index]}')
-    else:
-        st.warning("Please upload an image before predicting.")
+    # Prediction Button
+    if st.button('Predict'):
+        if test_image and model:
+            with st.spinner('Processing...'):
+                result_index = model_prediction(test_image)
+                class_names = ['Potato Early Blight', 'Potato Late Blight', 'Healthy']
+                
+                if result_index is not None:
+                    st.success(f'Model Prediction: {class_names[result_index]}')
+                else:
+                    st.error("Prediction failed. Please try again.")
+        else:
+            st.warning("Please upload an image before predicting.")
