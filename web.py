@@ -1,25 +1,14 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
-import gdown
 from PIL import Image
 import os
 
-# Google Drive model link (make sure it's shared publicly)
-MODEL_URL = "https://drive.google.com/uc?id=1aJLIC4LvSLpoM16dgmoHELCzP0QD2Ol2"
+# Path to the model file (now tracked by Git LFS)
 MODEL_PATH = "trained_plant_disease_model.keras"
 
 # Debug: Print current working directory
 st.write(f"Current working directory: {os.getcwd()}")
-
-# Download model if not exists
-if not os.path.exists(MODEL_PATH):
-    st.write("Downloading model, please wait...")
-    try:
-        gdown.download(MODEL_URL, MODEL_PATH, quiet=False, fuzzy=True)
-        st.write(f"Model downloaded to: {os.path.abspath(MODEL_PATH)}")
-    except Exception as e:
-        st.error(f"Error downloading model: {e}")
 
 # Load model
 try:
