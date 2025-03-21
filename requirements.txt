@@ -3,6 +3,7 @@ pickle-mixin
 streamlit
 seaborn
 pandas
+gdown
 scikit-learn
 tensorflow
 keras
