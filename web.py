@@ -17,12 +17,12 @@ st.sidebar.title("Plant Disease System for Sustainable Agriculture")
 app_mode = st.sidebar.selectbox('Select Page', ['Home', 'Disease Recognition'])
 
 # Banner Image (Ensuring uniform width)
-img = Image.open('Disease2.jpeg')
+img = Image.open('leafimg.jpg')
 st.image(img, use_column_width=True)  # Fixed width issue
 
 # Home Page
 if app_mode == 'Home':
-    st.markdown("<h1 style='text-align: center;'>Plant Disease Detection System for Sustainable Agriculture</h1>", 
+    st.markdown("<h1 style='text-align: center;'>Potato Leaf Disease Detection System for Sustainable Agriculture</h1>", 
                 unsafe_allow_html=True)
 
 # Disease Recognition Page
