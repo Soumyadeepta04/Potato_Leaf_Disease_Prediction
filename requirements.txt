@@ -1,3 +1,9 @@
+numpy
+pickle-mixin
+streamlit
+seaborn
+pandas
+scikit-learn
 tensorflow
 keras
 opencv_python_headless
